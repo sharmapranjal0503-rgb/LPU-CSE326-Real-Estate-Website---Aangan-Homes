@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aangan Homes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Aangan Homes home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--accent)"/><path d="M7 17 16 9l9 8v8H7z" style="fill:var(--deep)"/><rect x="13.5" y="18" width="5" height="7" style="fill:var(--accent)"/></svg>
+      Aangan Homes
+    </a>
+    <nav class="links">
+      <a href="#listings" data-mode="buy">Buy</a>
+      <a href="#listings" data-mode="rent">Rent</a>
+      <a href="#why">Why us</a>
+      <a class="btn" href="#enquire">List your property</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Punjab · Haryana · Chandigarh Tricity</div>
+      <h1>Find a home with room for your <em>aangan</em>.</h1>
+      <p class="lede">Verified flats, builder floors, villas and plots across the region. Every listing shows carpet area, RERA status and the real asking price.</p>
+    </div>
+    <svg class="skyline" viewBox="0 0 420 200" aria-hidden="true">
+      <rect class="s1" x="10" y="80" width="50" height="120"/><rect class="s2" x="70" y="40" width="60" height="160"/>
+      <rect class="s1" x="140" y="100" width="40" height="100"/><path class="s2" d="M190 200V120l50-40 50 40v80z"/>
+      <rect class="s1" x="300" y="60" width="45" height="140"/><rect class="s2" x="355" y="90" width="55" height="110"/>
+      <rect class="sw" x="82" y="56" width="10" height="12"/><rect class="sw" x="108" y="80" width="10" height="12"/><rect class="sw" x="82" y="104" width="10" height="12"/>
+      <rect class="sw" x="232" y="150" width="16" height="50"/><rect class="sw" x="312" y="78" width="9" height="11"/><rect class="sw" x="367" y="110" width="10" height="12"/><rect class="sw" x="389" y="140" width="10" height="12"/>
+    </svg>
+  </div>
+</section>
+
+<div class="search wrap">
+  <form id="searchForm" role="search">
+    <div class="seg" role="group" aria-label="Buy or rent">
+      <button type="button" id="segBuy" aria-pressed="true" data-mode="buy">Buy</button>
+      <button type="button" id="segRent" aria-pressed="false" data-mode="rent">Rent</button>
+    </div>
+    <div class="field q">
+      <label for="q">Location or project</label>
+      <input id="q" type="search" placeholder="e.g. Mohali, Sector 82">
+    </div>
+    <div class="field">
+      <label for="type">Property type</label>
+      <select id="type">
+        <option value="">Any type</option>
+        <option value="apartment">Apartment</option>
+        <option value="floor">Builder floor</option>
+        <option value="villa">Villa / House</option>
+        <option value="plot">Plot</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="bhk">Bedrooms</label>
+      <select id="bhk">
+        <option value="">Any BHK</option>
+        <option value="1">1 BHK</option>
+        <option value="2">2 BHK</option>
+        <option value="3">3 BHK</option>
+        <option value="4">4+ BHK</option>
+      </select>
+    </div>
+    <button class="btn" type="submit">Search</button>
+  </form>
+</div>
+
+<main>
+  <section class="listings wrap" id="listings">
+    <div class="bar">
+      <div>
+        <h2 id="listTitle">Homes for sale</h2>
+        <div class="count" id="count" aria-live="polite"></div>
+      </div>
+      <div class="chips">
+        <button class="chip" id="favOnly" aria-pressed="false">♥ Saved</button>
+        <button class="chip" id="reraOnly" aria-pressed="false">RERA approved</button>
+        <select id="sort" aria-label="Sort listings">
+          <option value="new">Newest first</option>
+          <option value="low">Price: low to high</option>
+          <option value="high">Price: high to low</option>
+          <option value="area">Largest area</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="why wrap" id="why">
+    <div class="cols">
+      <div><div class="k">100%</div><h3>Verified by visit</h3><p>Our team visits every property and checks the papers before it goes live.</p></div>
+      <div><div class="k">0</div><h3>Hidden brokerage</h3><p>Brokerage, maintenance and parking charges are shown upfront on each listing.</p></div>
+      <div><div class="k">48 h</div><h3>Site visit booked</h3><p>Send an enquiry and we arrange a visit with the owner within two days.</p></div>
+    </div>
+  </section>
+
+  <section class="enquire wrap" id="enquire">
+    <div class="enq">
+      <div>
+        <h2>Talk to a property advisor</h2>
+        <p>Tell us your budget and preferred area. We will shortlist homes that match and call you back.</p>
+        <p>Or reach us directly:</p>
+        <div class="contact">+91 98140 00000<br>hello@aanganhomes.example</div>
+      </div>
+      <form id="enqForm" novalidate>
+        <div class="field"><label for="ename">Full name</label><input id="ename" required placeholder="Your name"></div>
+        <div class="field"><label for="ephone">Phone</label><input id="ephone" type="tel" required placeholder="10-digit mobile" inputmode="numeric"></div>
+        <div class="field"><label for="ecity">City</label><select id="ecity"><option>Mohali</option><option>Chandigarh</option><option>Ludhiana</option><option>Jalandhar</option><option>Phagwara</option><option>Panchkula</option><option>Zirakpur</option><option>Yamunanagar</option></select></div>
+        <div class="field"><label for="ebudget">Budget</label><select id="ebudget"><option>Under ₹50 L</option><option>₹50 L – ₹1 Cr</option><option>₹1 Cr – ₹2 Cr</option><option>Above ₹2 Cr</option><option>Rental</option></select></div>
+        <div class="field full"><label for="emsg">Message</label><textarea id="emsg" rows="3" placeholder="e.g. Looking for a 3 BHK near a school, ready to move"></textarea></div>
+        <div class="full"><button class="btn" type="submit">Request a call back</button></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Aangan Homes · Sample listings for demonstration</span>
+    <span>Prices in Indian Rupees · Areas in sq ft (plots in sq yd)</span>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" id="modal"></div>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

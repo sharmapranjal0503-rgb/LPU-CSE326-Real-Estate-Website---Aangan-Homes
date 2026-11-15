@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aangan Homes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: sticky header, search-led hero, filter bar + card grid, detail modal with EMI calculator, enquiry form */
+:root {
+  --paper: #F5F6F1;
+  --surface: #FFFFFF;
+  --ink: #15302A;
+  --muted: #5B6B65;
+  --line: #DCE1DA;
+  --accent: #D99A17;      /* marigold */
+  --accent-ink: #2A1E04;
+  --deep: #15302A;        /* hero band */
+  --deep-fg: #EEF3EE;
+  --sky: #DDE8E2;
+  --bldg: #2F5A4F;
+  --bldg-2: #7FA393;
+  --win: #F3D58A;
+  --ground: #B9CBB9;
+  --ok: #2E7D4F;
+  --shadow: 0 1px 2px rgba(21,48,42,.06), 0 8px 24px rgba(21,48,42,.07);
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0F1714; --surface: #17221E; --ink: #E6EEE9; --muted: #9AAEA5; --line: #2A3A34;
+    --accent: #E8AE33; --accent-ink: #1E1503; --deep: #0A1310; --deep-fg: #E6EEE9;
+    --sky: #1C2C27; --bldg: #4C8574; --bldg-2: #2E4A41; --win: #E8C266; --ground: #24382F;
+    --ok: #5FC08A; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0F1714; --surface: #17221E; --ink: #E6EEE9; --muted: #9AAEA5; --line: #2A3A34;
+  --accent: #E8AE33; --accent-ink: #1E1503; --deep: #0A1310; --deep-fg: #E6EEE9;
+  --sky: #1C2C27; --bldg: #4C8574; --bldg-2: #2E4A41; --win: #E8C266; --ground: #24382F;
+  --ok: #5FC08A; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; }
+body { background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.55; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--deep); }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.1; }
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* Header */
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--deep); color: var(--deep-fg); border-bottom: 1px solid rgba(255,255,255,.08); }
+header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; }
+.logo { display: flex; align-items: center; gap: 10px; font-family: var(--f-display); font-weight: 800; font-size: 1.3rem; text-decoration: none; letter-spacing: -.01em; }
+.logo svg { width: 30px; height: 30px; }
+nav.links { display: flex; gap: 22px; align-items: center; }
+nav.links a { text-decoration: none; opacity: .85; font-weight: 600; font-size: .92rem; }
+nav.links a:hover { opacity: 1; color: var(--accent); }
+.btn { border: 0; border-radius: 8px; padding: 10px 18px; font-weight: 700; cursor: pointer; background: var(--accent); color: var(--accent-ink); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.btn:hover { filter: brightness(1.06); }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+@media (max-width: 720px) { nav.links a:not(.btn) { display: none; } }
+
+/* Hero */
+.hero { background: var(--deep); color: var(--deep-fg); position: relative; overflow: hidden; }
+.hero .wrap { padding-block: 56px 72px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: end; }
+.eyebrow { font-family: var(--f-mono); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.hero h1 { font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 800; letter-spacing: -.025em; margin-top: 12px; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero p.lede { max-width: 46ch; opacity: .82; font-size: 1.05rem; margin: 18px 0 0; }
+.skyline { width: 100%; height: auto; max-width: 100%; display: block; }
+.skyline .s1 { fill: rgba(255,255,255,.10); } .skyline .s2 { fill: rgba(255,255,255,.18); } .skyline .sw { fill: var(--accent); opacity: .9; }
+@media (max-width: 820px) { .hero .wrap { grid-template-columns: 1fr; padding-block: 40px 64px; } .skyline { max-width: 420px; } }
+
+/* Search */
+.search { margin-top: -36px; position: relative; z-index: 2; }
+.search form { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: 14px; display: grid; grid-template-columns: auto 1.4fr 1fr 1fr auto; gap: 10px; align-items: end; }
+.seg { display: inline-flex; background: var(--paper); border-radius: 10px; padding: 4px; border: 1px solid var(--line); align-self: stretch; }
+.seg button { border: 0; background: transparent; padding: 8px 16px; border-radius: 7px; font-weight: 700; cursor: pointer; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--deep); color: var(--deep-fg); }
+.field { display: grid; gap: 4px; min-width: 0; }
+.field label { font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.field input, .field select, .field textarea { width: 100%; border: 1px solid var(--line); background: var(--paper); border-radius: 8px; padding: 10px 12px; }
+@media (max-width: 900px) { .search form { grid-template-columns: 1fr 1fr; } .search .seg { grid-column: 1 / -1; justify-self: start; } .search .btn { grid-column: 1 / -1; justify-content: center; } .search .field.q { grid-column: 1 / -1; } }
+
+/* Listings */
+section.listings { padding-block: 48px 24px; }
+.bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 20px; }
+.bar h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
+.bar .count { color: var(--muted); font-size: .92rem; margin-top: 4px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip { border: 1px solid var(--line); background: var(--surface); padding: 6px 14px; border-radius: 999px; font-weight: 600; font-size: .85rem; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.chips select { border: 1px solid var(--line); background: var(--surface); padding: 6px 10px; border-radius: 999px; font-weight: 600; font-size: .85rem; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 20px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; transition: transform .2s ease, box-shadow .2s ease; }
+.card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.thumb { position: relative; aspect-ratio: 16 / 10; max-width: 100%; background: var(--sky); }
+.thumb svg { width: 100%; height: 100%; display: block; }
+.tag { position: absolute; top: 12px; left: 12px; background: var(--deep); color: var(--deep-fg); font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 10px; border-radius: 6px; }
+.tag.rent { background: var(--accent); color: var(--accent-ink); }
+.fav { position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--surface); display: grid; place-items: center; cursor: pointer; box-shadow: var(--shadow); }
+.fav svg { width: 18px; height: 18px; fill: none; stroke: var(--ink); stroke-width: 2; }
+.fav[aria-pressed="true"] svg { fill: #D64545; stroke: #D64545; }
+.body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.price { font-family: var(--f-display); font-weight: 800; font-size: 1.45rem; letter-spacing: -.01em; }
+.price small { font-family: var(--f-body); font-weight: 600; font-size: .8rem; color: var(--muted); }
+.card h3 { font-family: var(--f-body); font-size: 1rem; font-weight: 700; }
+.loc { color: var(--muted); font-size: .88rem; display: flex; gap: 6px; align-items: center; }
+.specs { display: flex; flex-wrap: wrap; gap: 6px 14px; padding-top: 10px; border-top: 1px dashed var(--line); font-size: .85rem; font-variant-numeric: tabular-nums; }
+.specs span b { font-weight: 700; }
+.rera { font-family: var(--f-mono); font-size: .68rem; color: var(--ok); letter-spacing: .02em; }
+.card .actions { margin-top: auto; display: flex; gap: 8px; padding-top: 6px; }
+.card .actions .btn { flex: 1; justify-content: center; padding: 9px 12px; font-size: .9rem; }
+.empty { grid-column: 1 / -1; text-align: center; padding: 48px 16px; border: 1px dashed var(--line); border-radius: 14px; color: var(--muted); }
+
+/* Why + enquiry */
+section.why { padding-block: 40px; }
+.why .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.why h3 { font-size: 1.15rem; margin-bottom: 6px; }
+.why p { margin: 0; color: var(--muted); }
+.why .k { font-family: var(--f-display); font-size: 2.2rem; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+@media (max-width: 720px) { .why .cols { grid-template-columns: 1fr; } }
+
+section.enquire { padding-block: 24px 64px; }
+.enq { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 28px; display: grid; grid-template-columns: 1fr 1.3fr; gap: 32px; }
+.enq h2 { font-size: 1.8rem; margin-bottom: 10px; }
+.enq p { color: var(--muted); margin: 0 0 12px; max-width: 40ch; }
+.enq form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.enq form .full { grid-column: 1 / -1; }
+.enq .contact { font-family: var(--f-mono); font-size: .85rem; user-select: all; }
+@media (max-width: 760px) { .enq { grid-template-columns: 1fr; padding: 20px; } .enq form { grid-template-columns: 1fr; } }
+
+footer { border-top: 1px solid var(--line); color: var(--muted); font-size: .85rem; }
+footer .wrap { padding-block: 22px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
+
+/* Modal */
+.overlay { position: fixed; inset: 0; background: rgba(8,16,13,.6); z-index: 50; display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.modal { background: var(--surface); border-radius: 16px; width: min(760px, 100%); max-height: 100%; overflow: auto; position: relative; }
+.modal .thumb { aspect-ratio: 16 / 7; }
+.modal .close { position: absolute; top: 12px; right: 12px; z-index: 2; width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--surface); cursor: pointer; font-size: 1.2rem; box-shadow: var(--shadow); }
+.modal .inner { padding: 22px 24px 26px; display: grid; gap: 16px; }
+.modal h2 { font-size: 1.6rem; }
+.facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.facts div { background: var(--surface); padding: 10px 12px; }
+.facts dt { font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; }
+.facts dd { margin: 2px 0 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .facts { grid-template-columns: repeat(2, 1fr); } }
+.amen { display: flex; flex-wrap: wrap; gap: 6px; }
+.amen span { background: var(--paper); border: 1px solid var(--line); padding: 4px 10px; border-radius: 6px; font-size: .82rem; }
+.emi { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
+.emi h3 { font-size: 1.05rem; }
+.emi .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+@media (max-width: 560px) { .emi .row { grid-template-columns: 1fr; } }
+.emi output { font-family: var(--f-display); font-size: 1.6rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.emi .note { font-size: .8rem; color: var(--muted); }
+
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 12px 18px; border-radius: 10px; font-weight: 600; z-index: 60; max-width: calc(100% - 32px); }
+
+/* Illustration */
+.ill-sky { fill: var(--sky); } .ill-b { fill: var(--bldg); } .ill-b2 { fill: var(--bldg-2); } .ill-w { fill: var(--win); } .ill-g { fill: var(--ground); } .ill-a { fill: var(--accent); } .ill-l { stroke: var(--bldg); stroke-width: 2; fill: none; stroke-dasharray: 6 5; }
+
+@media (prefers-reduced-motion: reduce) { .card, .card:hover { transition: none; transform: none; } }
+</style>
+</head><body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Aangan Homes home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--accent)"/><path d="M7 17 16 9l9 8v8H7z" style="fill:var(--deep)"/><rect x="13.5" y="18" width="5" height="7" style="fill:var(--accent)"/></svg>
+      Aangan Homes
+    </a>
+    <nav class="links">
+      <a href="#listings" data-mode="buy">Buy</a>
+      <a href="#listings" data-mode="rent">Rent</a>
+      <a href="#why">Why us</a>
+      <a class="btn" href="#enquire">List your property</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Punjab · Haryana · Chandigarh Tricity</div>
+      <h1>Find a home with room for your <em>aangan</em>.</h1>
+      <p class="lede">Verified flats, builder floors, villas and plots across the region. Every listing shows carpet area, RERA status and the real asking price.</p>
+    </div>
+    <svg class="skyline" viewBox="0 0 420 200" aria-hidden="true">
+      <rect class="s1" x="10" y="80" width="50" height="120"/><rect class="s2" x="70" y="40" width="60" height="160"/>
+      <rect class="s1" x="140" y="100" width="40" height="100"/><path class="s2" d="M190 200V120l50-40 50 40v80z"/>
+      <rect class="s1" x="300" y="60" width="45" height="140"/><rect class="s2" x="355" y="90" width="55" height="110"/>
+      <rect class="sw" x="82" y="56" width="10" height="12"/><rect class="sw" x="108" y="80" width="10" height="12"/><rect class="sw" x="82" y="104" width="10" height="12"/>
+      <rect class="sw" x="232" y="150" width="16" height="50"/><rect class="sw" x="312" y="78" width="9" height="11"/><rect class="sw" x="367" y="110" width="10" height="12"/><rect class="sw" x="389" y="140" width="10" height="12"/>
+    </svg>
+  </div>
+</section>
+
+<div class="search wrap">
+  <form id="searchForm" role="search">
+    <div class="seg" role="group" aria-label="Buy or rent">
+      <button type="button" id="segBuy" aria-pressed="true" data-mode="buy">Buy</button>
+      <button type="button" id="segRent" aria-pressed="false" data-mode="rent">Rent</button>
+    </div>
+    <div class="field q">
+      <label for="q">Location or project</label>
+      <input id="q" type="search" placeholder="e.g. Mohali, Sector 82">
+    </div>
+    <div class="field">
+      <label for="type">Property type</label>
+      <select id="type">
+        <option value="">Any type</option>
+        <option value="apartment">Apartment</option>
+        <option value="floor">Builder floor</option>
+        <option value="villa">Villa / House</option>
+        <option value="plot">Plot</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="bhk">Bedrooms</label>
+      <select id="bhk">
+        <option value="">Any BHK</option>
+        <option value="1">1 BHK</option>
+        <option value="2">2 BHK</option>
+        <option value="3">3 BHK</option>
+        <option value="4">4+ BHK</option>
+      </select>
+    </div>
+    <button class="btn" type="submit">Search</button>
+  </form>
+</div>
+
+<main>
+  <section class="listings wrap" id="listings">
+    <div class="bar">
+      <div>
+        <h2 id="listTitle">Homes for sale</h2>
+        <div class="count" id="count" aria-live="polite"></div>
+      </div>
+      <div class="chips">
+        <button class="chip" id="favOnly" aria-pressed="false">♥ Saved</button>
+        <button class="chip" id="reraOnly" aria-pressed="false">RERA approved</button>
+        <select id="sort" aria-label="Sort listings">
+          <option value="new">Newest first</option>
+          <option value="low">Price: low to high</option>
+          <option value="high">Price: high to low</option>
+          <option value="area">Largest area</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="why wrap" id="why">
+    <div class="cols">
+      <div><div class="k">100%</div><h3>Verified by visit</h3><p>Our team visits every property and checks the papers before it goes live.</p></div>
+      <div><div class="k">0</div><h3>Hidden brokerage</h3><p>Brokerage, maintenance and parking charges are shown upfront on each listing.</p></div>
+      <div><div class="k">48 h</div><h3>Site visit booked</h3><p>Send an enquiry and we arrange a visit with the owner within two days.</p></div>
+    </div>
+  </section>
+
+  <section class="enquire wrap" id="enquire">
+    <div class="enq">
+      <div>
+        <h2>Talk to a property advisor</h2>
+        <p>Tell us your budget and preferred area. We will shortlist homes that match and call you back.</p>
+        <p>Or reach us directly:</p>
+        <div class="contact">+91 98140 00000<br>hello@aanganhomes.example</div>
+      </div>
+      <form id="enqForm" novalidate>
+        <div class="field"><label for="ename">Full name</label><input id="ename" required placeholder="Your name"></div>
+        <div class="field"><label for="ephone">Phone</label><input id="ephone" type="tel" required placeholder="10-digit mobile" inputmode="numeric"></div>
+        <div class="field"><label for="ecity">City</label><select id="ecity"><option>Mohali</option><option>Chandigarh</option><option>Ludhiana</option><option>Jalandhar</option><option>Phagwara</option><option>Panchkula</option><option>Zirakpur</option><option>Yamunanagar</option></select></div>
+        <div class="field"><label for="ebudget">Budget</label><select id="ebudget"><option>Under ₹50 L</option><option>₹50 L – ₹1 Cr</option><option>₹1 Cr – ₹2 Cr</option><option>Above ₹2 Cr</option><option>Rental</option></select></div>
+        <div class="field full"><label for="emsg">Message</label><textarea id="emsg" rows="3" placeholder="e.g. Looking for a 3 BHK near a school, ready to move"></textarea></div>
+        <div class="full"><button class="btn" type="submit">Request a call back</button></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Aangan Homes · Sample listings for demonstration</span>
+    <span>Prices in Indian Rupees · Areas in sq ft (plots in sq yd)</span>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" id="modal"></div>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+const listings = [
+  { id: 1, mode: "buy", type: "apartment", bhk: 3, title: "3 BHK Apartment, Green Lotus Towers", city: "Mohali", area: "Sector 82, Mohali", price: 9200000, size: 1450, unit: "sq ft", bath: 3, floor: "7 of 14", facing: "East", rera: "PBRERA-SAS80-PR0912", age: "Ready to move", amen: ["Covered parking", "Power backup", "Gym", "Club house", "24×7 security"], added: 9 },
+  { id: 2, mode: "buy", type: "floor", bhk: 2, title: "2 BHK Builder Floor", city: "Ludhiana", area: "Model Town, Ludhiana", price: 5800000, size: 1100, unit: "sq ft", bath: 2, floor: "1 of 3", facing: "North", rera: "", age: "5 years old", amen: ["Modular kitchen", "Car parking", "Park facing"], added: 7 },
+  { id: 3, mode: "buy", type: "villa", bhk: 4, title: "4 BHK Independent Villa", city: "Zirakpur", area: "VIP Road, Zirakpur", price: 18500000, size: 2900, unit: "sq ft", bath: 4, floor: "G + 2", facing: "North-East", rera: "PBRERA-SAS81-PR1044", age: "New construction", amen: ["Private lawn", "Terrace", "2 car parking", "Servant room", "Solar water heater"], added: 10 },
+  { id: 4, mode: "rent", type: "apartment", bhk: 1, title: "1 BHK Furnished Studio", city: "Phagwara", area: "Near LPU, Phagwara", price: 12000, size: 520, unit: "sq ft", bath: 1, floor: "3 of 5", facing: "West", rera: "", age: "Furnished", amen: ["Wi-Fi", "AC", "Bed & wardrobe", "Power backup"], added: 8 },
+  { id: 5, mode: "buy", type: "plot", bhk: 0, title: "Residential Plot, 200 sq yd", city: "Jalandhar", area: "Urban Estate Phase 2, Jalandhar", price: 6400000, size: 200, unit: "sq yd", bath: 0, floor: "—", facing: "South", rera: "PBRERA-JAL01-PR0417", age: "Freehold", amen: ["Gated colony", "Corner plot", "30 ft road"], added: 5 },
+  { id: 6, mode: "rent", type: "apartment", bhk: 2, title: "2 BHK Apartment, Skyline Residency", city: "Mohali", area: "Sector 70, Mohali", price: 22000, size: 1050, unit: "sq ft", bath: 2, floor: "4 of 10", facing: "East", rera: "PBRERA-SAS80-PR0388", age: "Semi-furnished", amen: ["Lift", "Covered parking", "Children's play area"], added: 6 },
+  { id: 7, mode: "buy", type: "villa", bhk: 3, title: "3 BHK Independent House", city: "Yamunanagar", area: "Model Colony, Yamunanagar", price: 7800000, size: 1800, unit: "sq ft", bath: 3, floor: "G + 1", facing: "East", rera: "", age: "8 years old", amen: ["Courtyard", "Car porch", "Borewell"], added: 4 },
+  { id: 8, mode: "buy", type: "apartment", bhk: 4, title: "4 BHK Penthouse, The Crest", city: "Panchkula", area: "Sector 20, Panchkula", price: 24000000, size: 3400, unit: "sq ft", bath: 5, floor: "15 of 15", facing: "North", rera: "HRERA-PKL-PKL-412-2024", age: "Under construction · Dec 2027", amen: ["Private terrace", "Jacuzzi", "3 car parking", "Club house", "Pool"], added: 3 },
+  { id: 9, mode: "rent", type: "floor", bhk: 3, title: "3 BHK Builder Floor", city: "Ludhiana", area: "Sarabha Nagar, Ludhiana", price: 32000, size: 1600, unit: "sq ft", bath: 3, floor: "2 of 3", facing: "North", rera: "", age: "Unfurnished", amen: ["Lift", "Stilt parking", "Near market"], added: 2 },
+  { id: 10, mode: "rent", type: "villa", bhk: 4, title: "4 BHK Kothi with Lawn", city: "Chandigarh", area: "Sector 8, Chandigarh", price: 95000, size: 3200, unit: "sq ft", bath: 4, floor: "G + 1", facing: "South", rera: "", age: "Semi-furnished", amen: ["Front lawn", "Servant quarter", "3 car parking"], added: 1 }
+];
+
+const state = { mode: "buy", q: "", type: "", bhk: "", fav: false, rera: false, sort: "new" };
+let saved = new Set();
+try { saved = new Set(JSON.parse(localStorage.getItem("aangan-saved") || "[]")); } catch (e) {}
+function persist() { try { localStorage.setItem("aangan-saved", JSON.stringify([...saved])); } catch (e) {} }
+
+const inr = n => n.toLocaleString("en-IN");
+function fmtPrice(l) {
+  if (l.mode === "rent") return `₹${inr(l.price)} <small>/ month</small>`;
+  if (l.price >= 1e7) return `₹${+(l.price / 1e7).toFixed(2)} Cr`;
+  return `₹${+(l.price / 1e5).toFixed(1)} L`;
+}
+const typeName = { apartment: "Apartment", floor: "Builder floor", villa: "Villa / House", plot: "Plot" };
+
+/* Small drawn illustration per property type */
+function illus(l) {
+  const sky = `<rect class="ill-sky" width="320" height="200"/><rect class="ill-g" y="168" width="320" height="32"/>`;
+  let s = "";
+  if (l.type === "apartment") {
+    const floors = l.bhk >= 4 ? 9 : 7, top = 168 - floors * 16;
+    s += `<rect class="ill-b2" x="200" y="${top + 30}" width="70" height="${168 - top - 30}"/>`;
+    s += `<rect class="ill-b" x="90" y="${top}" width="110" height="${168 - top}"/>`;
+    for (let f = 0; f < floors; f++) for (let c = 0; c < 4; c++) s += `<rect class="ill-w" x="${100 + c * 25}" y="${top + 6 + f * 16}" width="14" height="9" opacity="${(f + c + l.id) % 3 ? 1 : .35}"/>`;
+    if (l.bhk >= 4) s += `<rect class="ill-a" x="86" y="${top - 6}" width="118" height="6"/>`;
+  } else if (l.type === "floor") {
+    s += `<rect class="ill-b" x="80" y="78" width="160" height="90"/><rect class="ill-b2" x="74" y="72" width="172" height="8"/>`;
+    for (let f = 0; f < 3; f++) { for (let c = 0; c < 4; c++) s += `<rect class="ill-w" x="${96 + c * 36}" y="${88 + f * 26}" width="20" height="14"/>`; s += `<rect class="ill-b2" x="80" y="${105 + f * 26}" width="160" height="3"/>`; }
+  } else if (l.type === "villa") {
+    s += `<rect class="ill-b" x="70" y="100" width="180" height="68"/><path class="ill-b2" d="M58 104 160 48l102 56z"/>`;
+    s += `<rect class="ill-a" x="146" y="128" width="28" height="40"/><rect class="ill-w" x="90" y="118" width="34" height="22"/><rect class="ill-w" x="196" y="118" width="34" height="22"/>`;
+    s += `<circle class="ill-b2" cx="40" cy="150" r="20"/><rect class="ill-b" x="38" y="150" width="4" height="18"/><circle class="ill-b2" cx="285" cy="146" r="22"/><rect class="ill-b" x="283" y="146" width="4" height="22"/>`;
+  } else {
+    s += `<path class="ill-g" d="M40 150 280 150 300 186 20 186z" opacity=".7"/><path class="ill-l" d="M60 140h200l20 36H40z"/>`;
+    [[60,140],[260,140],[280,176],[40,176]].forEach(([x,y]) => s += `<rect class="ill-a" x="${x-3}" y="${y-10}" width="6" height="12"/>`);
+    s += `<circle class="ill-b2" cx="250" cy="80" r="14"/>`;
+  }
+  return `<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${sky}${s}</svg>`;
+}
+
+function filtered() {
+  const q = state.q.trim().toLowerCase();
+  let out = listings.filter(l =>
+    l.mode === state.mode &&
+    (!q || (l.title + " " + l.area + " " + l.city).toLowerCase().includes(q)) &&
+    (!state.type || l.type === state.type) &&
+    (!state.bhk || (state.bhk === "4" ? l.bhk >= 4 : l.bhk === +state.bhk)) &&
+    (!state.fav || saved.has(l.id)) &&
+    (!state.rera || l.rera));
+  const by = { new: (a, b) => b.added - a.added, low: (a, b) => a.price - b.price, high: (a, b) => b.price - a.price, area: (a, b) => (b.unit === "sq yd" ? b.size * 9 : b.size) - (a.unit === "sq yd" ? a.size * 9 : a.size) };
+  return out.sort(by[state.sort]);
+}
+
+const heart = `<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.5-9.2C1 8.3 3.2 4.5 6.9 4.5c2.1 0 3.6 1.1 5.1 2.9 1.5-1.8 3-2.9 5.1-2.9 3.7 0 5.9 3.8 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg>`;
+
+function render() {
+  const items = filtered();
+  document.getElementById("listTitle").textContent = state.mode === "buy" ? "Homes for sale" : "Homes for rent";
+  document.getElementById("count").textContent = `${items.length} ${items.length === 1 ? "property" : "properties"} found`;
+  const grid = document.getElementById("grid");
+  if (!items.length) {
+    grid.innerHTML = `<div class="empty"><h3>No homes match these filters</h3><p>Try a nearby city, a different BHK, or clear the Saved and RERA filters.</p></div>`;
+    return;
+  }
+  grid.innerHTML = items.map(l => `
+    <article class="card">
+      <div class="thumb">${illus(l)}
+        <span class="tag ${l.mode}">${l.mode === "buy" ? "For sale" : "For rent"}</span>
+        <button class="fav" data-fav="${l.id}" aria-pressed="${saved.has(l.id)}" aria-label="Save ${l.title}">${heart}</button>
+      </div>
+      <div class="body">
+        <div class="price">${fmtPrice(l)}</div>
+        <h3>${l.title}</h3>
+        <div class="loc">📍 ${l.area}</div>
+        <div class="specs">
+          ${l.bhk ? `<span><b>${l.bhk}</b> BHK</span><span><b>${l.bath}</b> Bath</span>` : `<span><b>${typeName[l.type]}</b></span>`}
+          <span><b>${inr(l.size)}</b> ${l.unit}</span>
+          <span>${l.age}</span>
+        </div>
+        ${l.rera ? `<div class="rera">✓ RERA ${l.rera}</div>` : ""}
+        <div class="actions">
+          <button class="btn ghost" data-open="${l.id}">View details</button>
+          <button class="btn" data-enquire="${l.id}">Enquire</button>
+        </div>
+      </div>
+    </article>`).join("");
+}
+
+/* Modal with EMI calculator */
+const overlay = document.getElementById("overlay"), modal = document.getElementById("modal");
+let lastFocus = null;
+function openModal(id) {
+  const l = listings.find(x => x.id === id);
+  lastFocus = document.activeElement;
+  const emiBlock = l.mode === "buy" ? `
+    <div class="emi">
+      <h3>Home loan EMI estimate</h3>
+      <div class="row">
+        <div class="field"><label for="emiLoan">Loan amount (₹)</label><input id="emiLoan" type="number" min="0" step="50000" value="${Math.round(l.price * 0.8)}"></div>
+        <div class="field"><label for="emiRate">Interest rate (% p.a.)</label><input id="emiRate" type="number" min="1" max="20" step="0.05" value="8.5"></div>
+        <div class="field"><label for="emiYears">Tenure (years)</label><input id="emiYears" type="number" min="1" max="30" value="20"></div>
+      </div>
+      <div><output id="emiOut"></output> <span class="note">per month</span></div>
+      <div class="note" id="emiNote"></div>
+    </div>` : `
+    <div class="emi"><h3>Move-in cost</h3><div><output>₹${inr(l.price * 3)}</output> <span class="note">approx. (2 months deposit + 1 month rent)</span></div></div>`;
+  modal.innerHTML = `
+    <button class="close" id="closeModal" aria-label="Close">✕</button>
+    <div class="thumb">${illus(l)}<span class="tag ${l.mode}">${l.mode === "buy" ? "For sale" : "For rent"}</span></div>
+    <div class="inner">
+      <div>
+        <div class="price">${fmtPrice(l)}</div>
+        <h2 id="mTitle">${l.title}</h2>
+        <div class="loc">📍 ${l.area}</div>
+      </div>
+      <dl class="facts">
+        <div><dt>Type</dt><dd>${typeName[l.type]}</dd></div>
+        <div><dt>${l.unit === "sq yd" ? "Plot area" : "Carpet area"}</dt><dd>${inr(l.size)} ${l.unit}</dd></div>
+        <div><dt>Floor</dt><dd>${l.floor}</dd></div>
+        <div><dt>Facing</dt><dd>${l.facing}</dd></div>
+        <div><dt>Bedrooms</dt><dd>${l.bhk || "—"}</dd></div>
+        <div><dt>Bathrooms</dt><dd>${l.bath || "—"}</dd></div>
+        <div><dt>Status</dt><dd>${l.age}</dd></div>
+        <div><dt>${l.mode === "buy" ? "Price / sq ft" : "Rent / sq ft"}</dt><dd>₹${inr(Math.round(l.price / (l.unit === "sq yd" ? l.size * 9 : l.size)))}</dd></div>
+      </dl>
+      ${l.rera ? `<div class="rera">✓ RERA registration ${l.rera}</div>` : ""}
+      <div class="amen">${l.amen.map(a => `<span>${a}</span>`).join("")}</div>
+      ${emiBlock}
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" data-enquire="${l.id}">Book a site visit</button>
+        <button class="btn ghost" data-fav="${l.id}" aria-pressed="${saved.has(l.id)}">${saved.has(l.id) ? "♥ Saved" : "♡ Save"}</button>
+      </div>
+    </div>`;
+  overlay.hidden = false;
+  document.body.style.overflow = "hidden";
+  if (l.mode === "buy") { ["emiLoan", "emiRate", "emiYears"].forEach(i => document.getElementById(i).addEventListener("input", calcEmi)); calcEmi(); }
+  document.getElementById("closeModal").focus();
+}
+function closeModal() { overlay.hidden = true; document.body.style.overflow = ""; if (lastFocus) lastFocus.focus(); }
+
+function calcEmi() {
+  const P = +document.getElementById("emiLoan").value || 0;
+  const r = (+document.getElementById("emiRate").value || 0) / 12 / 100;
+  const n = (+document.getElementById("emiYears").value || 0) * 12;
+  let emi = 0;
+  if (P > 0 && n > 0) emi = r === 0 ? P / n : P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+  document.getElementById("emiOut").textContent = "₹" + inr(Math.round(emi));
+  document.getElementById("emiNote").textContent = n ? `Total interest ₹${inr(Math.round(emi * n - P))} over ${n / 12} years. Indicative only; your bank's rate may differ.` : "";
+}
+
+/* Toast */
+let toastTimer;
+function toast(msg) { const t = document.getElementById("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.hidden = true, 2800); }
+
+/* Events */
+function setMode(m) {
+  state.mode = m;
+  document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.mode === m));
+  render();
+}
+document.querySelectorAll("[data-mode]").forEach(b => b.addEventListener("click", () => setMode(b.dataset.mode)));
+document.getElementById("searchForm").addEventListener("submit", e => {
+  e.preventDefault();
+  state.q = document.getElementById("q").value;
+  state.type = document.getElementById("type").value;
+  state.bhk = document.getElementById("bhk").value;
+  render();
+  document.getElementById("listings").scrollIntoView({ behavior: "smooth" });
+});
+["type", "bhk"].forEach(id => document.getElementById(id).addEventListener("change", e => { state[id] = e.target.value; render(); }));
+document.getElementById("q").addEventListener("input", e => { state.q = e.target.value; render(); });
+document.getElementById("sort").addEventListener("change", e => { state.sort = e.target.value; render(); });
+["favOnly", "reraOnly"].forEach(id => document.getElementById(id).addEventListener("click", e => {
+  const key = id === "favOnly" ? "fav" : "rera";
+  state[key] = !state[key];
+  e.currentTarget.setAttribute("aria-pressed", state[key]);
+  render();
+}));
+
+document.addEventListener("click", e => {
+  const fav = e.target.closest("[data-fav]"), open = e.target.closest("[data-open]"), enq = e.target.closest("[data-enquire]");
+  if (fav) {
+    const id = +fav.dataset.fav;
+    saved.has(id) ? saved.delete(id) : saved.add(id);
+    persist(); render();
+    if (!overlay.hidden) openModal(id);
+    toast(saved.has(id) ? "Saved to your shortlist" : "Removed from your shortlist");
+  } else if (open) openModal(+open.dataset.open);
+  else if (enq) {
+    const l = listings.find(x => x.id === +enq.dataset.enquire);
+    if (!overlay.hidden) closeModal();
+    document.getElementById("ecity").value = l.city;
+    document.getElementById("emsg").value = `I'm interested in: ${l.title}, ${l.area}`;
+    document.getElementById("enquire").scrollIntoView({ behavior: "smooth" });
+    setTimeout(() => document.getElementById("ename").focus({ preventScroll: true }), 400);
+  } else if (e.target === overlay) closeModal();
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !overlay.hidden) closeModal(); });
+
+document.getElementById("enqForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = document.getElementById("ename").value.trim();
+  const phone = document.getElementById("ephone").value.replace(/\D/g, "");
+  if (!name) { toast("Enter your name so the advisor knows who to ask for."); return; }
+  if (phone.length !== 10) { toast("Enter a 10-digit mobile number."); return; }
+  toast(`Thanks, ${name.split(" ")[0]}. Enquiry noted (demo form, nothing is sent).`);
+  e.target.reset();
+});
+
+render();
+</script>
+</body></html>
